@@ -16,6 +16,16 @@ class CreateModule extends Command
         'Model',
         'Routes',
     ];
+
+    public static function saveConfig($arr){
+        $content = "<?php return [\n";
+        foreach($arr as $v){
+            $content .= $v."\n";
+        }
+        $content .= "]";
+        file_put_contents(config_path('module.php'),$content);
+    }
+
     /**
      * The name and signature of the console command.
      *
@@ -49,10 +59,26 @@ class CreateModule extends Command
     public function handle()
     {
 
+        $modulesPath = app_path('Modules');
+        File::ensureDirectoryExists($modulesPath);
+
+        $configModules = config_path('module.php');
+        if(!File::exists($configModules))
+            $this->call('vendor:publish',['--provider' => "Wolf1848\Module\Providers\ModulesServiceProvider"]);
+
+        $moduleFolder = $modulesPath.'/'.$this->argument('ModuleName');
+        File::ensureDirectoryExists($moduleFolder);
+
+        foreach (self::MODULE_DIR as $dir){
+            File::ensureDirectoryExists($moduleFolder.'/'.$dir);
+        }
+
+        $configModulesArray = require_once $configModules;
+        $configModulesArray[] = $this->argument('ModuleName');
+        self::saveConfig($configModulesArray);
 
 
-//        $modulesPath = app_path('Modules');
-//        File::ensureDirectoryExists($modulesPath);
+
 
 //        if(!File::exists($modulesPath.'/ModulesServiceProvider.php'))
 //            copy(__DIR__.'/source/ModulesServiceProvider.copy',$modulesPath.'/ModulesServiceProvider.php');
