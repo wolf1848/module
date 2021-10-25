@@ -1,18 +1,18 @@
 {
     "name": "wolf1848/module",
-    "type": "LaravelPlugin",
+    "type": "library",
     "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Wolf1848\\Module\\": "src/"
+        }
+    },
     "authors": [
         {
             "name": "Dmitriev Ivan",
             "email": "wolf1848@mail.ru"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "Wolf1848\\Module\\": "src/"
-        }
-    },
     "extra": {
         "laravel": {
             "providers": [
@@ -20,5 +20,6 @@
             ]
         }
     },
+    "minimum-stability": "stable",
     "require": {}
 }
