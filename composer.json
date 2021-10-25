@@ -1,6 +1,6 @@
 {
     "name": "wolf1848/module",
-    "type": "Laravel Plugin",
+    "type": "LaravelPlugin",
     "authors": [
         {
             "name": "Dmitriev Ivan",
