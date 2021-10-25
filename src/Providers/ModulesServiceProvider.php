@@ -8,11 +8,18 @@ use Wolf1848\Module\Console\Commands\CreateModule;
 class ModulesServiceProvider extends \Illuminate\Support\ServiceProvider {
     public function boot() {
 
+
+        //Добавляем консольные команды
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CreateModule::class,
             ]);
         }
+        //Публикуются конфиги
+        $this->publishes([
+            __DIR__.'/../config/module.php' => config_path('module.php'),
+        ]);
+
         //получаем список модулей, которые надо подгрузить
 /*        $modules = config("module.modules");
         if($modules) {
