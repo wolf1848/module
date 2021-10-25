@@ -16,10 +16,12 @@
     "extra": {
         "laravel": {
             "providers": [
-                "App\\Modules\\ModulesServiceProvider"
+                "Wolf1848\\Module\\Providers\\ModulesServiceProvider"
             ]
         }
     },
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "illuminate/support" : "^8,*"
+    }
 }
