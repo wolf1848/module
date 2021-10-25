@@ -1,6 +1,7 @@
 {
     "name": "wolf1848/module",
     "type": "LaravelPlugin",
+    "license": "MIT",
     "authors": [
         {
             "name": "Dmitriev Ivan",
