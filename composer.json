@@ -1,0 +1,23 @@
+{
+    "name": "wolf1848/module",
+    "type": "Laravel Plugin",
+    "authors": [
+        {
+            "name": "Dmitriev Ivan",
+            "email": "wolf1848@mail.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Wolf1848\\Module\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "App\\Modules\\ModulesServiceProvider"
+            ]
+        }
+    },
+    "require": {}
+}
