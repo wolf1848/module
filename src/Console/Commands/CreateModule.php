@@ -20,9 +20,9 @@ class CreateModule extends Command
     public static function saveConfig($arr){
         $content = "<?php return [\n";
         foreach($arr as $v){
-            $content .= $v."\n";
+            $content .= "'".$v."',\n";
         }
-        $content .= "]";
+        $content .= "];";
         file_put_contents(config_path('module.php'),$content);
     }
 
@@ -58,24 +58,30 @@ class CreateModule extends Command
      */
     public function handle()
     {
+        $configModulesArray = config('module');
+        if(in_array($this->argument('ModuleName'),$configModulesArray)){
+            $this->error('Модуль с таким именем существует!');
+        }else {
 
-        $modulesPath = app_path('Modules');
-        File::ensureDirectoryExists($modulesPath);
+            $modulesPath = app_path('Modules');
+            File::ensureDirectoryExists($modulesPath);
 
-        $configModules = config_path('module.php');
-        if(!File::exists($configModules))
-            $this->call('vendor:publish',['--provider' => "Wolf1848\Module\Providers\ModulesServiceProvider"]);
+            $configModules = config_path('module.php');
+            if(!File::exists($configModules))
+                $this->call('vendor:publish',['--provider' => "Wolf1848\Module\Providers\ModulesServiceProvider"]);
 
-        $moduleFolder = $modulesPath.'/'.$this->argument('ModuleName');
-        File::ensureDirectoryExists($moduleFolder);
+            $moduleFolder = $modulesPath.'/'.$this->argument('ModuleName');
+            File::ensureDirectoryExists($moduleFolder);
 
-        foreach (self::MODULE_DIR as $dir){
-            File::ensureDirectoryExists($moduleFolder.'/'.$dir);
+            foreach (self::MODULE_DIR as $dir){
+                File::ensureDirectoryExists($moduleFolder.'/'.$dir);
+            }
+            $configModulesArray[] = $this->argument('ModuleName');
+
+            self::saveConfig($configModulesArray);
         }
 
-        $configModulesArray = require_once $configModules;
-        $configModulesArray[] = $this->argument('ModuleName');
-        self::saveConfig($configModulesArray);
+
 
 
 

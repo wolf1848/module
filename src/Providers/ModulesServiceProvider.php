@@ -21,27 +21,27 @@ class ModulesServiceProvider extends \Illuminate\Support\ServiceProvider {
         ]);
 
         //получаем список модулей, которые надо подгрузить
-/*        $modules = config("module.modules");
-        if($modules) {
-            foreach ($modules as $module){
-                //Подключаем роуты для модуля
-                if(file_exists(__DIR__.'/'.$module.'/Routes/routes.php')) {
-                    $this->loadRoutesFrom(__DIR__.'/'.$module.'/Routes/routes.php');
-                }
-                //Загружаем View
-                if(is_dir(__DIR__.'/'.$module.'/Views')) {
-                    $this->loadViewsFrom(__DIR__.'/'.$module.'/Views', $module);
-                }
-                //Подгружаем миграции
-                //if(is_dir(__DIR__.'/'.$module.'/Migration')) {
-                    //$this->loadMigrationsFrom(__DIR__.'/'.$module.'/Migration');
-                //}
-                //Подгружаем переводы
-                if(is_dir(__DIR__.'/'.$module.'/Lang')) {
-                    $this->loadTranslationsFrom(__DIR__.'/'.$module.'/Lang', $module);
-                }
+        $modules = config("module");
+        $modulesPath = app_path('Modules');
+        foreach ($modules as $module){
+            $dir = $modulesPath.'/'.$module;
+            //Подключаем роуты для модуля
+            if(file_exists($dir.'/Routes/routes.php')) {
+                $this->loadRoutesFrom($dir.'/Routes/routes.php');
             }
-        }*/
+            //Загружаем View
+            if(is_dir($dir.'/Views')) {
+                $this->loadViewsFrom($dir.'/Views', $module);
+            }
+            //Подгружаем миграции
+            //if(is_dir($dir.'/Migration')) {
+                //$this->loadMigrationsFrom($dir.'/Migration');
+            //}
+            //Подгружаем переводы
+            if(is_dir($dir.'/Lang')) {
+                $this->loadTranslationsFrom($dir.'/Lang', $module);
+            }
+        }
     }
 
     public function register(){
