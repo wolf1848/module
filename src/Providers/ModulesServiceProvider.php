@@ -1,6 +1,6 @@
 <?php namespace Wolf1848\Module\Providers;
 
-use Wolf1848\Module\Console\Commands\CreateModule;
+use Wolf1848\Module\Console\Commands;
 
 //https://web-programming.com.ua/realizaciya-modulnoj-struktury-v-laravel/
 
@@ -12,7 +12,9 @@ class ModulesServiceProvider extends \Illuminate\Support\ServiceProvider {
         //Добавляем консольные команды
         if ($this->app->runningInConsole()) {
             $this->commands([
-                CreateModule::class,
+                Commands\CreateModule::class,
+                Commands\ModuleMigrate::class,
+                Commands\ModuleModel::class,
             ]);
         }
         //Публикуются конфиги
