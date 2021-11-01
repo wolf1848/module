@@ -40,7 +40,7 @@ class CreateModule extends Command
         $content .= "\t"."Route::post('/post', Controllers\ClassController::class . '@funcController');" ."\n";
         $content .= "\t"."Route::get('/get', function(){return response()->json([1,2])})"."\n";
         $content .= "});";
-        file_put_contents($this->moduleFolder,$content);
+        file_put_contents($this->moduleFolder.'/Routes/routes.php',$content);
     }
 
     /**
