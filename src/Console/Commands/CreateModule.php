@@ -16,6 +16,11 @@ class CreateModule extends Command
         'Model',
         'Routes',
     ];
+    protected $configModulesArray;
+    protected $moduleName;
+    protected $modulesPath;
+    protected $moduleFolder;
+
 
     public static function saveConfig($arr){
         $content = "<?php return [\n";
@@ -32,7 +37,9 @@ class CreateModule extends Command
      * @var string
      */
     protected $signature = 'module:create
-                            {ModuleName : Указать название модуля (обязательный)}';
+                            {ModuleName : Указать название модуля (обязательный)}
+                            {--reset : Переустановить модуль}
+                            {--remove : Удалить модуль}';
 
     /**
      * The console command description.
@@ -51,6 +58,44 @@ class CreateModule extends Command
         parent::__construct();
     }
 
+    protected function remove(){
+        if(in_array($this->moduleName,$this->configModulesArray) && is_dir($this->moduleFolder)){
+            File::deleteDirectories($this->moduleFolder);
+            File::deleteDirectory($this->moduleFolder);
+            unset($this->configModulesArray[array_search($this->moduleName,$this->configModulesArray)]);
+            $this->configModulesArray = array_values($this->configModulesArray);
+            self::saveConfig($this->configModulesArray);
+            $this->info('Модуль '.$this->moduleName.' удален');
+        }else
+            $this->info('Модуль '.$this->moduleName.' не найден');
+    }
+
+    protected function create(){
+        if(in_array($this->moduleName,$this->configModulesArray)){
+            $this->error('Модуль '.$this->moduleName.' существует!');
+        }else {
+
+            $this->modulesPath = app_path('Modules');
+            File::ensureDirectoryExists($this->modulesPath);
+
+            $configModules = config_path('module.php');
+            if(!File::exists($configModules))
+                $this->call('vendor:publish',['--provider' => "Wolf1848\Module\Providers\ModulesServiceProvider"]);
+
+            $this->moduleFolder = $this->modulesPath.'/'.$this->moduleName;
+            File::ensureDirectoryExists($this->moduleFolder);
+
+            foreach (self::MODULE_DIR as $dir){
+                File::ensureDirectoryExists($this->moduleFolder.'/'.$dir);
+            }
+            $this->configModulesArray[] = $this->moduleName;
+
+            self::saveConfig($this->configModulesArray);
+        }
+
+        $this->info('Модуль '.$this->moduleName.' успешно создан');
+    }
+
     /**
      * Execute the console command.
      *
@@ -58,63 +103,20 @@ class CreateModule extends Command
      */
     public function handle()
     {
-        $configModulesArray = config('module');
-        if(in_array($this->argument('ModuleName'),$configModulesArray)){
-            $this->error('Модуль с таким именем существует!');
-        }else {
+        $this->configModulesArray = config('module');
+        $this->moduleName = $this->argument('ModuleName');
+        $this->modulesPath = app_path('Modules');
+        $this->moduleFolder = $this->modulesPath.'/'.$this->moduleName;
 
-            $modulesPath = app_path('Modules');
-            File::ensureDirectoryExists($modulesPath);
-
-            $configModules = config_path('module.php');
-            if(!File::exists($configModules))
-                $this->call('vendor:publish',['--provider' => "Wolf1848\Module\Providers\ModulesServiceProvider"]);
-
-            $moduleFolder = $modulesPath.'/'.$this->argument('ModuleName');
-            File::ensureDirectoryExists($moduleFolder);
-
-            foreach (self::MODULE_DIR as $dir){
-                File::ensureDirectoryExists($moduleFolder.'/'.$dir);
-            }
-            $configModulesArray[] = $this->argument('ModuleName');
-
-            self::saveConfig($configModulesArray);
+        if($this->option('remove')){
+            $this->remove();
+        }elseif($this->option('reset')){
+            $this->remove();
+            $this->create();
+        }else{
+            $this->create();
         }
 
-
-
-
-
-
-//        if(!File::exists($modulesPath.'/ModulesServiceProvider.php'))
-//            copy(__DIR__.'/source/ModulesServiceProvider.copy',$modulesPath.'/ModulesServiceProvider.php');
-
-//        $appConfig = file_get_contents(config_path('app.php'));
-//        $pos = strripos($appConfig,"providers");
-//        ;
-//        $this->info(mb_substr($appConfig,$pos));
-        //$appConfig = config('app.providers');
-        //$appConfig[] = 'App\Modules\ModulesServiceProvider::class';
-            //config(['app.providers' => $appConfig]);
-            //config(['app.providers.module' => 'App\Modules\ModulesServiceProvider::class']);
-        //$appConfig = config('app.providers');
-
-//        $modulePath = $modulesPath.'/'.$this->argument('ModuleName');
-//        File::ensureDirectoryExists($modulePath);
-
-
-
-        //$this->info(file_exists($modulePath.'/ModulesServiceProvider.php'));
-        //$message = $modulesPath."\n";
-//        /Config::set('app.providers.module','App\Modules\ModulesServiceProvider::class');
-        //$message .= print_r($appConfig,1);
-
-
-
-        $this->info('Succesfull create module!');
-//        $this->info(!File::exists(__DIR__.'/ModulesServiceProvider.copy'));
-//        $this->info(!File::exists($modulesPath.'/ModulesServiceProvider.copy'));
-        //$this->info($message);
         return 0;
     }
 }
