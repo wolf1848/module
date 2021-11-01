@@ -5,7 +5,7 @@ namespace Wolf1848\Module\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class ModuleModule extends Command
+class ModuleModel extends Command
 {
 
     protected $moduleName;
