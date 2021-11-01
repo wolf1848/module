@@ -1,0 +1,15 @@
+<?
+
+use Illuminate\Support\Facades\Route;
+use App\Modules\{{ module }}\Controllers;
+
+Route::group(['prefix' => 'api'], function () {
+
+    Route::group(['prefix' => 'main','middleware' => [/*'check_auth','set_token'*/]], function () {
+        Route::post('/post', Controllers\ModuleController::class . '@funcController');
+        Route::get('/get', function(){
+            response()->json([1,2]);
+        });
+    });
+
+});

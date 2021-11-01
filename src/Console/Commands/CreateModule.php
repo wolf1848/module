@@ -32,14 +32,18 @@ class CreateModule extends Command
     }
 
     public function addRoute(){
-        $content = "<?php";
-        $content .= "\n" . "use Illuminate\Support\Facades\Route;";
-        $content .= "\n" . "use App\Modules\\".$this->moduleName."\Controllers;" . "\n";
-        $content .= "\n";
-        $content .= "Route::group(['prefix' => 'api','middleware' => [/*'через запятую','сколько надо'*/]], function () {" ."\n";
-        $content .= "\t"."Route::post('/post', Controllers\ClassController::class . '@funcController');" ."\n";
-        $content .= "\t"."Route::get('/get', function(){return response()->json([1,2])});"."\n";
-        $content .= "});";
+        $content = File::get(__DIR__.'/stubs/route.stub');
+        $replace = [
+            '{{ module }}' => $this->moduleName,
+        ];
+
+        foreach ($replace as $search => $item) {
+            $content = str_replace(
+                $search,
+                $item,
+                $content
+            );
+        }
         File::put($this->moduleFolder.'/Routes/routes.php',$content);
     }
 
