@@ -104,9 +104,9 @@ class CreateModule extends Command
 
             $this->saveConfig();
             $this->addRoute();
-        }
 
-        $this->info('Модуль '.$this->moduleName.' успешно создан');
+            $this->info('Модуль '.$this->moduleName.' успешно создан');
+        }
     }
 
     /**
