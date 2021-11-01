@@ -1,0 +1,12 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Model;
+use Wolf1848\Module\Traits\GetTableName;
+
+class {{ class }} extends Model
+{
+    use GetTableName;
+    protected $table = '{{ table }}';
+}

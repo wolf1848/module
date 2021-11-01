@@ -28,19 +28,19 @@ class CreateModule extends Command
             $content .= "\t'".$v."',\n";
         }
         $content .= "];";
-        file_put_contents(config_path('module.php'),$content);
+        File::put(config_path('module.php'),$content);
     }
 
     public function addRoute(){
         $content = "<?php";
-        $content .= "\n" . "use Illuminate\Support\Facades\Route";
+        $content .= "\n" . "use Illuminate\Support\Facades\Route;";
         $content .= "\n" . "use App\Modules\\".$this->moduleName."\Controllers;" . "\n";
         $content .= "\n";
         $content .= "Route::group(['prefix' => 'api','middleware' => [/*'через запятую','сколько надо'*/]], function () {" ."\n";
         $content .= "\t"."Route::post('/post', Controllers\ClassController::class . '@funcController');" ."\n";
-        $content .= "\t"."Route::get('/get', function(){return response()->json([1,2])})"."\n";
+        $content .= "\t"."Route::get('/get', function(){return response()->json([1,2])});"."\n";
         $content .= "});";
-        file_put_contents($this->moduleFolder.'/Routes/routes.php',$content);
+        File::put($this->moduleFolder.'/Routes/routes.php',$content);
     }
 
     /**
