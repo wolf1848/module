@@ -22,13 +22,25 @@ class CreateModule extends Command
     protected $moduleFolder;
 
 
-    public static function saveConfig($arr){
+    public function saveConfig(){
         $content = "<?php return [\n";
-        foreach($arr as $v){
-            $content .= "'".$v."',\n";
+        foreach($this->configModulesArray as $v){
+            $content .= "\t'".$v."',\n";
         }
         $content .= "];";
         file_put_contents(config_path('module.php'),$content);
+    }
+
+    public function addRoute(){
+        $content = "<?php";
+        $content .= "\n" . "use Illuminate\Support\Facades\Route";
+        $content .= "\n" . "use App\Modules\\".$this->moduleName."\Controllers;" . "\n";
+        $content .= "\n";
+        $content .= "Route::group(['prefix' => 'api','middleware' => [/*'через запятую','сколько надо'*/]], function () {" ."\n";
+        $content .= "\t"."Route::post('/post', Controllers\ClassController::class . '@funcController');" ."\n";
+        $content .= "\t"."Route::get('/get', function(){return response()->json([1,2])})"."\n";
+        $content .= "});";
+        file_put_contents($this->moduleFolder,$content);
     }
 
     /**
@@ -64,7 +76,7 @@ class CreateModule extends Command
             File::deleteDirectory($this->moduleFolder);
             unset($this->configModulesArray[array_search($this->moduleName,$this->configModulesArray)]);
             $this->configModulesArray = array_values($this->configModulesArray);
-            self::saveConfig($this->configModulesArray);
+            $this->saveConfig();
             $this->info('Модуль '.$this->moduleName.' удален');
         }else
             $this->info('Модуль '.$this->moduleName.' не найден');
@@ -90,7 +102,8 @@ class CreateModule extends Command
             }
             $this->configModulesArray[] = $this->moduleName;
 
-            self::saveConfig($this->configModulesArray);
+            $this->saveConfig();
+            $this->addRoute();
         }
 
         $this->info('Модуль '.$this->moduleName.' успешно создан');
@@ -101,7 +114,7 @@ class CreateModule extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         $this->configModulesArray = config('module');
         $this->moduleName = $this->argument('ModuleName');
