@@ -120,7 +120,7 @@ class CreateModule extends Command
      */
     public function handle() : int
     {
-        $this->configModulesArray = config('module');
+        $this->configModulesArray = config('module') ? config('module') : [];
         $this->moduleName = $this->argument('ModuleName');
         $this->modulesPath = app_path('Modules');
         $this->moduleFolder = $this->modulesPath.'/'.$this->moduleName;
