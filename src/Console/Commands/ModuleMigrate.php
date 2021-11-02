@@ -159,8 +159,8 @@ class ModuleMigrate extends Command
         if($this->option('remove'))
             $this->downMigration();
         elseif($this->option('reset')){
-            $this->downMigration();
-            $this->upMigration();
+            $this->call('module:migrate',['ModuleName' => $this->moduleName,'--remove' => true]);
+            $this->call('module:migrate',['ModuleName' => $this->moduleName]);
         }elseif($this->option('back') > 0)
             $this->backMigration();
         else
