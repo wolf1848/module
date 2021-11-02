@@ -36,6 +36,9 @@ class ModuleModel extends Command
 
         File::put($this->modelsPath.'/'.$this->modelName.'.php',$content);
         $this->info('Модель '.$this->modelName.' создана');
+        if($this->option('migration')){
+            $this->call('module:migration',['ModuleName' => $this->moduleName,'MigrationName' => $this->modelName]);
+        }
     }
 
     /**
@@ -45,7 +48,8 @@ class ModuleModel extends Command
      */
     protected $signature = 'module:model
                             {ModuleName : Указать название модуля (обязательный)}
-                            {ModelName : Указать название модели (обязательный)}';
+                            {ModelName : Указать название модели (обязательный)}
+                            {--migration : Создать миграцию}';
 
     /**
      * The console command description.

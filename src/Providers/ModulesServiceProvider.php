@@ -15,6 +15,7 @@ class ModulesServiceProvider extends \Illuminate\Support\ServiceProvider {
                 Commands\CreateModule::class,
                 Commands\ModuleMigrate::class,
                 Commands\ModuleModel::class,
+                Commands\ModuleMigration::class,
             ]);
         }
         //Публикуются конфиги
