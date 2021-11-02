@@ -30,7 +30,7 @@ class ModuleController extends Command
             );
         }
 
-        File::put($this->modelsPath.'/'.$this->controllerName.'Controller.php',$content);
+        File::put($this->controllersPath.'/'.$this->controllerName.'Controller.php',$content);
         $this->info('Контроллер '.$this->controllerName.' создан');
 
     }
