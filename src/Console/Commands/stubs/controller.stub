@@ -1,0 +1,13 @@
+<?
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use {{ model }};
+
+class {{ class }} extends Controller{
+    public function test(Request $request){
+        //$request->get_post_params
+        return response()->json(['array']);
+    }
+}

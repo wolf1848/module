@@ -38,8 +38,13 @@ class ModuleMigration extends Command
             );
         }
 
-        File::put($this->migrationPath.'/'.Carbon::now()->format('d_m_Y_H_i_s').$tableName.'.php',$content);
-        $this->info('Миграция '.$this->migrationName.' создана');
+        $fileName = $this->option('update') ? '_update'.$tableName : $tableName;
+
+        File::put($this->migrationPath.'/'.Carbon::now()->format('d_m_Y_H_i_s').$fileName.'.php',$content);
+        if($this->option('update'))
+            $this->info('обновление миграции '.$this->migrationName.' создано');
+        else
+            $this->info('Миграция '.$this->migrationName.' создана');
     }
 
     /**
