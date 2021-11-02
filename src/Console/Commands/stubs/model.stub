@@ -11,6 +11,8 @@ class {{ class }} extends Model
     protected $table = '{{ table }}';
 
     /**
+    protected $dates = ['date']; //указывает поля для преобразования в Carbon
+
         Один ко многим
         public function HasMany(){
             return $this->hasMany(User::class, 'foreignKey', 'localKey');
@@ -22,6 +24,21 @@ class {{ class }} extends Model
         Многие ко многим
         public function ManyToMany(){
             return $this->belongToMany(User::class, 'name_table', 'foreignKey', 'relatedKey');
+        }
+
+        полиморфное отношение
+        public function users(){
+            return $this->morphedByMany(Morph::class,'requestable','l_module_morph_to_table');
+        }
+        обратная связь
+        public function requests(){
+            return $this->morphToMany(Table::class, 'requestable','l_module_table_to_morph');
+        }
+
+
+        *виртуальное поле
+        public function getFullNameAttribute(){
+            return $this->last.' '.$this->first.' '.$this->second;
         }
     */
 

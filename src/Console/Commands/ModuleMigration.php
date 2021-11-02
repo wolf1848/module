@@ -2,28 +2,32 @@
 
 namespace Wolf1848\Module\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class ModuleModel extends Command
+class ModuleMigration extends Command
 {
 
     protected $moduleName;
-    protected $modelsPath;
-    protected $modelName;
+    protected $migrationPath;
+    protected $migrationName;
 
-    public function addModel(){
-        $content = File::get(__DIR__.'/stubs/model.stub');
-        $tableArr = str_split($this->modelName,1);
+    public function addMigration(){
+        if($this->option('update'))
+            $content = File::get(__DIR__.'/stubs/migration_update.stub');
+        else
+            $content = File::get(__DIR__.'/stubs/migration.stub');
+
+        $tableArr = str_split($this->migrationName,1);
         $tableName = '';
         foreach ($tableArr as $el){
             $tableName .= ctype_upper($el) ? '_'.strtolower($el) :  $el;
         }
 
         $replace = [
-          '{{ namespace }}' => "App\Modules\\".$this->moduleName.'\Model;',
-          '{{ class }}' => $this->modelName,
-          '{{ table }}' => 'l_'.strtolower($this->moduleName).$tableName,
+            '{{ class }}' => $this->migrationName,
+            '{{ table }}' => 'l_'.strtolower($this->moduleName).$tableName,
         ];
 
         foreach ($replace as $search => $item) {
@@ -34,8 +38,8 @@ class ModuleModel extends Command
             );
         }
 
-        File::put($this->modelsPath.'/'.$this->modelName.'.php',$content);
-        $this->info('Модель '.$this->modelName.' создана');
+        File::put($this->migrationPath.'/'.Carbon::now()->format('d_m_Y_H_i_s').'_'.strtolower($this->migrationName).'.php',$content);
+        $this->info('Модель '.$this->migrationName.' создана');
     }
 
     /**
@@ -43,9 +47,10 @@ class ModuleModel extends Command
      *
      * @var string
      */
-    protected $signature = 'module:model
+    protected $signature = 'module:migration
                             {ModuleName : Указать название модуля (обязательный)}
-                            {ModelName : Указать название модели (обязательный)}';
+                            {MigrationName : Указать название миграции (обязательный)}
+                            {--update : Обновить таблицу}';
 
     /**
      * The console command description.
@@ -72,10 +77,10 @@ class ModuleModel extends Command
     public function handle()
     {
         $this->moduleName = $this->argument('ModuleName');
-        $this->modelName = $this->argument('ModelName');
-        $this->modelsPath = app_path('Modules').'/'.$this->moduleName.'/Model';
+        $this->migrationName = $this->argument('MigrationName');
+        $this->migrationPath = app_path('Modules').'/'.$this->moduleName.'/Migration';
 
-        $this->addModel();
+        $this->addMigration();
 
         return 0;
     }
