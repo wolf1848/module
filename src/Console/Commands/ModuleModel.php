@@ -14,10 +14,16 @@ class ModuleModel extends Command
 
     public function addModel(){
         $content = File::get(__DIR__.'/stubs/model.stub');
+        $tableArr = explode('',$this->modelName);
+        $tableName = '';
+        foreach ($tableArr as $el){
+            $tableName .= ctype_upper($el) ? '_'.strtolower($el) :  $el;
+        }
+
         $replace = [
           '{{ namespace }}' => "App\Modules\\".$this->moduleName.'\Model;',
           '{{ class }}' => $this->modelName,
-          '{{ table }}' => 'l_'.strtolower($this->moduleName).'_'.strtolower($this->modelName),
+          '{{ table }}' => 'l_'.strtolower($this->moduleName).$tableName,
         ];
 
         foreach ($replace as $search => $item) {
@@ -29,7 +35,7 @@ class ModuleModel extends Command
         }
 
         File::put($this->modelsPath.'/'.$this->modelName.'.php',$content);
-
+        $this->info('Модель '.$this->modelName.' создана');
     }
 
     /**

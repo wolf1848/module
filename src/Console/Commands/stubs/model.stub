@@ -9,4 +9,20 @@ class {{ class }} extends Model
 {
     use GetTableName;
     protected $table = '{{ table }}';
+
+    /**
+        Один ко многим
+        public function HasMany(){
+            return $this->hasMany(User::class, 'foreignKey', 'localKey');
+
+         * обратная связь:
+            return $this->belongTo(User::class, 'foreignKey', 'ownerKey');
+        }
+
+        Многие ко многим
+        public function ManyToMany(){
+            return $this->belongToMany(User::class, 'name_table', 'foreignKey', 'relatedKey');
+        }
+    */
+
 }
